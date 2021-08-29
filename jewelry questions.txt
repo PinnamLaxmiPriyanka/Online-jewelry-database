@@ -1,0 +1,324 @@
+1.which companies are located in hyderabad?
+select *from company where location='Hyderabad';
+
+2.who are the customers are from Hyderabad?
+select *from customer where location='Hyderabad';
+
+3.List the gold jewelry
+ select *from jewelry where material='gold';
+select category,material from metal m,jewelry j where material="gold";
+
+4.Find all the jewelry which ranges from 1000 to 10000?
+select *from jewelry where price>1000 and price<10000;
+
+5.Find out the customer whose name end with i?
+select *from customer where name like '%i';
+
+6.Find out Company whose name starts with s?
+select *from company where cname not like 'S%';
+
+7.Find the jewelry information which doesn't have discount?
+select category from jewelry where discount is not null;
+
+
+8.How many jewelry orders were taken by shruti?
+ select *from `order` where cid=1;
+
+9.list the jewelry which was ordered by laxmi?
+select category from jewelry j,`order` o where o.orderid=j.orderid and cid=4;
+
+10.list the people who ordered silver jewelry?
+ select name,material from customer c,`order` o,jewelry j where o.orderid=j.orderid and o.cid=c.cid and material='silver';
+select name,material from customer c,`order` o,jewelry j, metal m where o.orderid=j.orderid and o.cid=c.cid and m.jid=j.jid and material='silver';
+
+11.list of people who have paid bill more than 10000?
+select name,totalprice from customer c,bill b where b.cid=c.cid and totalprice>10000;
+
+12.list the jewelry that is supplied to the lalitha jewelers?
+select category from jewelry j,suppliedby s where j.jid=s.jid and coid=1;
+
+13.find the jewelry of Pradeep which are coming from aeroplane?
+select category from bill b,ship s,customer c where b.shipid=s.shipid and c.cid=b.cid and name="Pradeep" and shipvia="aeroplane";
+
+14.Find the totalprice paid by the customer is less than atleast one customer
+select name,totalprice from bill b,customer c where c.cid=b.cid and totalprice<some(select totalprice from bill);
+
+15.Find all the jewelry which got more than 2 rating?
+select categoryname,rate from jewelry j,review r  where j.jid=r.jid and rate>2;
+
+16.Find out the suppliers who has supplied jewels to "Vaibhav jewelrs'?
+select suppliername from suppliers s,suppliedfrom sf where s.supplierid=sf.supplierid and coid=5;
+
+17.Who have paid the online payment?
+select name from customer c,bill b,payment p where c.cid=b.cid and b.paymentid=p.paymentid and paymentmode="Online payment through apps";
+
+18.Which company does vamsi supply the jewels?
+select cname from company c,suppliedfrom sf,suppliers s where c.coid=sf.coid and s.supplierid=sf.supplierid and suppliername="Vamsi";
+
+19.Who have ordered ring?
+select name from customer c,`order` o,jewelry j where c.cid=o.cid and o.orderid=j.orderid and categoryname="ring";
+
+20.find information about jewelries which are earings?
+select *from jewelry j where categoryname="earrings"; 
+
+21.what are the purchase details of jewelry for the month of march?
+select *from bill b where month(billdate)=03;
+
+22.Change the supplier name 'kishan' to 'Raju'?
+update suppliers set suppliername='Raju' where supplierid=1;
+
+23.Where do ravi stay?
+select name,location from customer where name='Ravi';
+
+24.Change the company name of 'Pc jewellers' to 'Malabar jewllers'?
+update company set cname='Malabar jewellers' where coid=3;
+
+25.which supplier lives in banglore?
+select suppliername,location from suppliers where location='Banglore';
+
+1)How many people bought the earrings?
+select count(j.jid) from jewelry j, `order` o where j.orderid=o.orderid and categoryname="earrings";
+
+2.What is the min cost of jewelry which is present?
+select min(price) from jewelry;
+
+3)Which jewelry max customers have bought?
+ select max(categoryname) from jewelry;
+
+4.What is the totalcost of the jewelry ordered?
+select sum(price) from `order`;
+
+5.What is the average cost of jewelry bought by the Lasya?
+select avg(o.price) from `order`o,customer c where o.cid=c.cid and name="Lasya";
+
+
+
+functions- Write a PL/SQL function to find the name of the library which has the cheapest books. 
+1)Write a PL/SQL function to define total number of jewelry present?
+delimiter $$
+create function totaljewelry()
+returns int
+begin 
+declare total int;
+select count(jid) into total from jewelry;
+return total;
+end $$
+
+select totaljewelry() as "Total jewelry present is:"\g
+
+
+
+2) Write a PL/SQL function to find the name of the customer who have ordered the jewelry with least cost?
+delimiter $$
+create function cuname()
+returns varchar(100)
+begin 
+declare cu_name varchar(100);
+select name into cu_name from `order` o,customer c where c.cid=o.cid and price=(select min(price) from `order`);
+return cu_name;
+end $$
+
+select cuname() as"The customer who have ordered the cheapest jewelry"\g
+
+
+3) Write a PL/SQL function to find the price of costliest jewelry?
+delimiter $$
+create function cjewelry()
+returns int
+begin 
+declare costly int;
+select price into costly from jewelry where price=(select max(price) from jewelry);
+return costly;
+end $$
+
+select cjewelry() as"The price of costliest jewelry is"\g
+
+4)How many customers stay in pune?
+delimiter $$
+create function c_loc()
+returns int
+begin 
+declare loc int;
+select count(cid) into loc from customer where location="Pune";
+return loc;
+end $$
+
+select c_loc() as"The number of people who stay in pune are:"\g
+
+
+5)How many members have paid through online?
+delimiter $$
+create function pay()
+returns int
+begin 
+declare payment int;
+select count(b.paymentid) into payment from bill b,payment p where b.paymentid=p.paymentid and paymentmode="Online payment through apps";
+return payment;
+end $$
+
+select pay() as"The number of people who paid the bill through online are:"\g
+
+
+
+6)Find the total no.of suppliers?
+delimiter $$
+create function suppliers()
+returns int
+begin 
+declare total int;
+select count(supplierid) into total from suppliers;
+return total;
+end $$
+
+select suppliers() as"The number of suppliers who supply jewellery are"\g
+
+7) Write a PL/SQL function to define total number of orders?
+delimiter $$
+create function totalorder()
+returns int
+begin 
+declare total int;
+select count(orderid) into total from `order`;
+return total;
+end $$
+
+select totalorder() as "Total orders given by the customers are:"\g
+
+
+Procedures-
+1)Find the details of particular customer order
+
+delimiter $$
+create procedure sorder(in cname varchar(100))
+begin
+select *from `order` o,customer c where o.cid=c.cid and name=cname;
+end $$
+
+call sorder('Shruti')\g
+
+2.find the total number of jewelry which are supplied to a particular company?
+delimiter $$
+create procedure jewel(in sname varchar(100))
+begin
+select count(s.jid) from suppliedby s, jewelry j,company c where s.jid=j.jid and c.coid=s.coid and cname=sname;
+end $$
+
+call jewel('Pc jewellers')\g
+
+
+3.Find the cost of particular jewelry?
+delimiter $$
+create procedure cost(in jname varchar(100))
+begin
+select jid,price,categoryname from jewelry where categoryname=jname;
+end $$
+
+call cost('bangle')\g
+
+4.Find out the rating given by particular customer?
+delimiter $$
+create procedure rating(in  cname varchar(100))
+begin
+select rate,name from review r,customer c where r.cid=c.cid and name=cname;
+end $$
+
+call rating('Pradeep')\g
+
+
+5.find how many people have used boat way for shipping the order?
+delimiter $$
+create procedure shipp(in shvia varchar(100), out total int)
+begin
+select shipvia,count(s.shipid) from ship s,bill b where s.shipid=b.shipid and shipvia=shvia;
+end $$
+
+call shipp('boat',@total)\g
+select @total\g
+
+
+
+triggers-
+
+1.Implement before insert trigger on customer table
+delimiter $$
+create trigger cusmail
+before insert on customer
+for each row
+If new.location="Hyderabad" then set new.location="Enter another location";
+end If;$$
+
+insert into customer values(9,'lilly','Hyderabad','lilly@gmail.com',222222222);
+
+2.
+delimiter $$
+create trigger c_pin
+before insert on c_location
+for each row
+If new.pincode=500090 then set new.pincode=0;
+end If;$$
+
+insert into c_location values('Hyderabad',500090);
+
+3.
+delimiter $$
+create trigger sloc
+before update on s_location
+for each row
+begin
+if new.location="Hyderabad" then
+set new.location="Ts";
+elseif new.location!="Hyderabad" then
+set new.location="Not a Ts";
+end If;
+end $$
+delimiter;
+
+update s_location set location="Pune" where pincode=560015;
+
+
+4.
+delimiter $$
+create trigger spin
+before update on s_location
+for each row
+begin
+if new.pincode="500090" then
+set new.location="Hyderabad";
+elseif new.pincode!="500090" then
+set new.pincode="Incorrect Pincode";
+end If;
+end $$
+delimiter;
+
+update s_location set pincode=308010 where location="Incorrect Pincode";
+
+5.
+delimiter $$
+create trigger cpin
+before insert on c_location
+for each row
+begin
+if new.pincode=0 and new.location="Hyderabad" then
+set new.pincode="500091";
+end If;
+end $$
+delimiter;
+
+insert into c_location values("Hyderabad",0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

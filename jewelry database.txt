@@ -1,0 +1,361 @@
+create database jewelry;
+use jewelry;
+
+
+1.create table customer(cid int primary key,name varchar(100) unique,location varchar(100) not null,email varchar(100) unique,phone varchar(100) not null unique);
+2.create table c_location(location varchar(100) not null,pincode varchar(50) unique);
+3.create table `order`(orderid int primary key,quantity int,price int,weight int,cid int not null,foreign key(cid) references customer(cid));
+4.create table jewelry(jid int primary key,material varchar(100) not null,metal varchar(50) null,weight int not null, discount int, price int not null, categoryname varchar(50) not null, orderid int null, foreign key(orderid) references `order`(orderid),aid int not null, foreign key(aid) references admin(aid));
+5.create table company(coid int primary key,cname varchar(100) unique,clocation varchar(100) not null,contact varchar(20) unique);
+6.create table suppliers(supplierid int primary key,suppliername varchar(50) unique,email varchar(100)unique,phone varchar(100) not null unique,location varchar(100) unique not null);
+7.create table s_location(location varchar(100) not null,pincode varchar(50) unique);
+8.create table admin(aid int primary key,aname varchar(100) unique,foreign key(jid) references jewelry(jid),jid int not null);
+9.create table bill(bid int primary key,metal varchar(100) null,category varchar(50) not null,material varchar(50) not null,totalprice int,weight int,quantity int,billdate date not null,shipid int not null,foreign key(shipid) references ship(shipid),paymentid int not null, foreign key(paymentid) references payment(paymentid),aid int not null,foreign key(aid) references admin(aid),cid int not null, foreign key(cid) references customer(cid));
+10.create table ship(shipid int primary key,shipdate date not null,shipvia varchar(100) not null);
+11.create table payment(paymentid int primary key,paymentmode varchar(100) not null);
+12.create table suppliedby(sbid int primary key,jid int not null,foreign key(jid) references jewelry(jid),coid int not null,foreign key(coid) references company(coid));
+13.create table suppliedfrom(sfid int primary key,supplierid int not null,foreign key(supplierid) references suppliers(supplierid),coid int null,foreign key(coid) references company(coid));
+14.create table review(reviewid int primary key,rate int,email varchar(50) null,cid int not null,foreign key(cid) references customer(cid),jid int not null,foreign key(jid) references jewelry(jid));
+15.create table cus_phone(c_pid int primary key,number varchar(20) not null unique,cid int not null, foreign key(cid) references customer(cid));
+16.create table com_phone(co_pid int primary key,number varchar(20) not null unique,coid int not null,foreign key(coid) references company(coid));
+17.create table supp_phone(s_pid int primary key,number varchar(20) not null unique,supplierid int not null,foreign key(supplierid) references suppliers(supplierid));
+18.create table verifies(verid int primary key,aid int not null,foreign key(aid) references jewelry(jid),bid int not null, foreign key(bid) references bill(bid));
+
+
+data into tables;
+1.customer table;
+insert into customer values(1,'Shruti','Hyderabad','shruti@gmail.com',1234567992);
+insert into customer values(2,'Lasya','Kanpur','lasya@gmail.com',4962187325);
+insert into customer values(3,'Pradeep','Hyderabad','pradeep@gmail.com',2348962173);
+insert into customer values(4,'Laxmi','Hyderabad','laxmi@gmail.com',4563289346);
+insert into customer values(5,'Geeta','Banglore','geeta@gmail.com',5326974123);
+insert into customer values(6,'Ramu','Vizag','ramu@gmail.com',7896523145);
+insert into customer values(7,'Ravi','Mumbai','ravi@gmail.com',4562913087);
+insert into customer values(8,'Kavya','Chennai','kavya@gmail.com',3289654103);
+
+
+2.c_location
+insert into c_location values('Hyderabad',500090);
+insert into c_location values('Kanpur',208010);
+insert into c_location values('Banglore',560015);
+insert into c_location values('Vizag',530013);
+insert into c_location values('Mumbai',400019);
+insert into c_location values('Chennai',600012);
+
+
+3.order
+insert into `order` values(1,1,20000,5,1);
+insert into `order` values(2,2,30000,10,2);
+insert into `order` values(3,1,10000,6,1);
+insert into `order` values(4,4,40000,20,3);
+insert into `order` values(5,1,5000,3,5);
+insert into `order` values(6,2,15000,7,6);
+insert into `order` values(7,3,50000,15,7);
+insert into `order` values(8,5,60000,25,2);
+insert into `order` values(9,3,43000,13,3);
+insert into `order` values(10,2,2000,9,5);
+insert into `order` values(11,1,2000,4,8);
+insert into `order` values(12,1,1500,8,6);
+insert into `order` values(13,2,23000,14,7);
+insert into `order` values(14,3,28000,19,5);
+insert into `order` values(15,3,18000,22,4);
+insert into `order` values(16,2,33000,16,3);
+insert into `order` values(17,1,2500,7,3);
+insert into `order` values(18,2,3500,17,2);
+insert into `order` values(19,2,4600,18,6);
+insert into `order` values(20,4,45000,24,8);
+
+
+4.jewelry table
+insert into jewelry values(1,'gold','22ktyellow',5,Null,20000,'pendant',1,1);
+insert into jewelry values(2,'silver',null,11,Null,25000,'chain',null,1);
+insert into jewelry values(3,'gold','24ktyellow',10,Null,30000,'earrings',2,1);
+insert into jewelry values(4,'gold','22ktrose',6,Null,10000,'ring',3,1);
+insert into jewelry values(5,'gold','22ktyellow',20,Null,40000,'earrings',4,1);
+insert into jewelry values(6,'silver',null,9,Null,2000,'earrings',10,1);
+insert into jewelry values(7,'gold','22ktyellow',3,Null,5000,'pendant',5,1);
+insert into jewelry values(8,'gold','22ktyellow',16,Null,25000,'ring',null,1);
+insert into jewelry values(9,'gold','24ktwhite',4,Null,2000,'bracelet',11,1);
+insert into jewelry values(10,'platinum',null,25,5,63000,'ring',8,1);
+insert into jewelry values(11,'gold','24ktyellow',14,Null,23000,'pendant',13,1);
+insert into jewelry values(12,'diamond','0.50',24,5,47250,'ring',20,1);
+insert into jewelry values(13,'gold','24ktrose',16,Null,33000,'earrings',16,1);
+insert into jewelry values(14,'silver',null,7,Null,15000,'earrings',6,1);
+insert into jewelry values(15,'silver',null,18,Null,4600,'pendant',19,1);
+insert into jewelry values(16,'gold','24ktyellow',19,Null,28000,'ring',14,1);
+insert into jewelry values(17,'gold','24ktwhite',15,Null,50000,'ring',7,1);
+insert into jewelry values(18,'silver',null,10,Null,25000,'ring',null,1);
+insert into jewelry values(19,'diamond','0.25',7,Null,2500,'ring',17,1);
+insert into jewelry values(20,'silver',null,5,Null,25000,'ring',null,1);
+insert into jewelry values(21,'platinum',null,7,Null,25000,'ring',null,1);
+insert into jewelry values(22,'gold','24ktyellow',13,Null,43000,'bracelet',9,1);
+insert into jewelry values(23,'silver',null,8,Null,1500,'bangle',12,1);
+insert into jewelry values(24,'gold','24ktwhite',17,Null,3500,'earrings',18,1);
+insert into jewelry values(25,'platinum',null,6,Null,25000,'ring',null,1);
+insert into jewelry values(26,'gold','22ktrose',22,2,18360,'ring',15,1);
+
+
+commands:
+ alter table `jewelry` modify orderid int null;-for making not null to null
+
+
+5.company table-
+insert into company values(1,'Lalitha jewellers','Hyderabad',04067486677);
+insert into company values(2,'Manepally jewellers','Hyderabad',03345666622);
+insert into company values(3,'Pc jewellers','Kanpur',05122303477);
+insert into company values(4,'Sri neela jewellers','Banglore',9845418226);
+insert into company values(5,'Vaibhav jewellers','Vizag',08916667777);
+insert into company values(6,'anmol jewellers','Mumbai',022613334444);
+insert into company values(7,'bapalal jewellers','Chennai',04428113030);
+insert into company values(8,'Sonalia jewellers','Kolkata',03340064220);
+
+
+6.suppliers table
+create table suppliers(supplierid int primary key,suppliername varchar(50) unique,email varchar(100)unique,phone varchar(100) not null unique,location varchar(100) unique not null);
+insert into suppliers values(1,'Kishan','kishan@gmail.com',9654123007,'Hyderabad');
+insert into suppliers values(2,'Ramesh','ramesh@gmail.com',9654123008,'Pune');
+insert into suppliers values(3,'Suresh','suresh@gmail.com',9654123009,'Mumbai');
+insert into suppliers values(4,'Lata','lata@gmail.com',9654123010,'Chennai');
+insert into suppliers values(5,'Srinu','srinu@gmail.com',9654123027,'Banglore');
+insert into suppliers values(6,'Vamsi','vamsi@gmail.com',9654123017,'Kolkata');
+
+
+7.s_location table
+insert into s_location values('Hyderabad',500090);
+insert into s_location values('Pune',412115);
+insert into s_location values('Kolkata',308010);
+insert into s_location values('Banglore',560015);
+insert into s_location values('Mumbai',400019);
+insert into s_location values('Chennai',600012);
+
+
+8.admin table-alter table admin drop column `jid`;
+create table admin(aid int primary key,aname varchar(100) unique);
+insert into admin values(1,'Jewels');
+
+
+9.bill table-create table bill(bid int primary key,metal varchar(100) null,category varchar(50) not null,material varchar(50) not null,totalprice int,weight int,quantity int,billdate date not null,shipid int not null,foreign key(shipid) references ship(shipid),paymentid int not null, foreign key(paymentid) references payment(paymentid),aid int not null,foreign key(aid) references admin(aid),cid int not null, foreign key(cid) references customer(cid));
+insert into bill values(1,'22ktyellow','pendant','gold',20000,5,1,'2019-05-20',1,1,1,1);
+insert into bill values(2,'24ktyellow','earrings','gold',30000,5,2,'2019-06-16',2,1,1,2);
+insert into bill values(3,'22ktrose','ring','gold',10000,5,1,'2018-02-22',3,2,1,1);
+insert into bill values(4,'22ktyellow','earrings','gold',40000,5,4,'2017-04-20',4,2,1,3);
+insert into bill values(5,'22ktyellow','pendant','gold',5000,5,1,'2017-05-23',5,3,1,5);
+insert into bill values(6,null,'earrings','silver',15000,5,2,'2018-06-15',6,4,1,6);
+insert into bill values(7,'24ktwhite','ring','gold',50000,5,3,'2019-07-20',7,1,1,7);
+insert into bill values(8,null,'ring','platinum',60000,5,5,'2018-03-14',8,2,1,2);
+insert into bill values(9,'24ktyellow','bracelet','gold',43000,5,3,'2018-09-03',9,2,1,3);
+insert into bill values(10,null,'earrings','silver',2000,5,2,'2019-10-05',10,2,1,5);
+insert into bill values(11,'24ktwhite','bracelet','gold',2000,5,1,'2019-04-26',11,1,1,8);
+insert into bill values(12,null,'bangle','silver',1500,5,1,'2015-06-20',12,1,1,6);
+insert into bill values(13,'24ktyellow','pendant','gold',23000,5,2,'2017-08-22',13,3,1,7);
+insert into bill values(14,'24ktyellow','ring','gold',28000,5,3,'2017-06-16',14,4,1,5);
+insert into bill values(15,'22ktrose','ring','gold',18000,5,3,'2018-03-23',15,4,1,4);
+insert into bill values(16,'24ktrose','earrings','gold',33000,5,2,'2019-05-24',16,3,1,3);
+insert into bill values(17,'0.25','ring','diamond',2500,5,1,'2020-08-28',17,3,1,3);
+insert into bill values(18,'24ktwhite','earrings','gold',3500,5,2,'2016-09-20',18,1,1,2);
+insert into bill values(19,null,'pendant','silver',4600,5,2,'2016-11-21',19,2,1,6);
+insert into bill values(20,'0.50','ring','diamond',45000,5,4,'2016-05-17',20,1,1,8);
+
+
+
+
+
+
+
+10.ship table
+create table ship(shipid int primary key,shipdate date not null,shipvia varchar(100) not null);
+insert into ship values(1,'2019-05-20','boat');
+insert into ship values(2,'2019-06-16','boat');
+insert into ship values(3,'2018-02-22','aeroplane');
+insert into ship values(4,'2017-04-20','Land');
+insert into ship values(5,'2017-05-23','land');
+insert into ship values(6,'2018-06-15','land');
+insert into ship values(7,'2019-07-20','boat');
+insert into ship values(8,'2018-03-14','aeroplane');
+insert into ship values(9,'2018-09-03','boat');
+insert into ship values(10,'2019-10-05','boat');
+insert into ship values(11,'2019-04-26','land');
+insert into ship values(12,'2015-06-20','aeroplane');
+insert into ship values(13,'2017-08-22','aeroplane');
+insert into ship values(14,'2017-06-16','boat');
+insert into ship values(15,'2018-03-23','boat');
+insert into ship values(16,'2019-05-24','aeroplane');
+insert into ship values(17,'2020-08-28','boat');
+insert into ship values(18,'2016-09-20','land');
+insert into ship values(19,'2016-11-21','land');
+insert into ship values(20,'2016-05-17','boat');
+
+
+
+11.Payment table
+create table payment(paymentid int primary key,paymentmode varchar(100) not null);
+insert into payment values(1,'cash');
+insert into payment values(2,'credit card');
+insert into payment values(3,'debit card');
+insert into payment values(4,'online payment through apps');
+
+12.Suppliedby table
+create table suppliedby(sbid int primary key,jid int not null,foreign key(jid) references jewelry(jid),coid int not null,foreign key(coid) references company(coid));
+insert into suppliedby values(1,1,1);
+insert into suppliedby values(2,2,1);
+insert into suppliedby values(3,3,2);
+insert into suppliedby values(4,4,2);
+insert into suppliedby values(5,5,3);
+insert into suppliedby values(6,6,1);
+insert into suppliedby values(7,7,4);
+insert into suppliedby values(8,8,1);
+insert into suppliedby values(9,9,5);
+insert into suppliedby values(10,10,5);
+insert into suppliedby values(11,11,1);
+insert into suppliedby values(12,12,7);
+insert into suppliedby values(13,13,1);
+insert into suppliedby values(14,14,6);
+insert into suppliedby values(15,15,6);
+insert into suppliedby values(16,16,6);
+insert into suppliedby values(17,17,1);
+insert into suppliedby values(18,18,8);
+insert into suppliedby values(19,19,8);
+insert into suppliedby values(20,20,1);
+insert into suppliedby values(21,21,7);
+insert into suppliedby values(22,22,7);
+insert into suppliedby values(23,23,3);
+insert into suppliedby values(24,24,2);
+insert into suppliedby values(25,25,1);
+insert into suppliedby values(26,26,5);
+
+
+13.Suppliedfrom table-create table suppliedfrom(sfid int primary key,supplierid int not null,foreign key(supplierid) references suppliers(supplierid),coid int null,foreign key(coid) references company(coid));
+insert into suppliedfrom values(1,1,1);
+insert into suppliedfrom values(2,2,3);
+insert into suppliedfrom values(3,3,4);
+insert into suppliedfrom values(4,4,5);
+insert into suppliedfrom values(5,5,2);
+insert into suppliedfrom values(6,6,7);
+
+
+14.review table-create table review(reviewid int primary key,rate int,email varchar(50) not null unique,cid int not null,foreign key(cid) references customer(cid),jid int not null,foreign key(jid) references jewelry(jid));
+insert into review values(1,3,'shruti@gmail.com',1,1);
+insert into review values(2,2,'lasya@gmail.com',2,10);
+insert into review values(3,3,'laxmi@gmail.com',4,26);
+insert into review values(4,4,'shruti@gmail.com',1,4);
+insert into review values(5,5,'ramu@gmail.com',6,14);
+insert into review values(6,1,'ramu@gmail.com',6,23);
+insert into review values(7,2,'ravi@gmail.com',7,17);
+insert into review values(8,3,'kavya@gmail.com',8,9);
+insert into review values(9,4,'kavya@gmail.com',8,12);
+insert into review values(10,2,'ravi@gmail.com',7,11);
+
+
+15.cus_phone
+create table cus_phone(c_pid int primary key,number varchar(20) not null unique,cid int not null, foreign key(cid) references customer(cid));
+insert into cus_phone values(1,1234567992,1);
+insert into cus_phone values(2,4962187325,2);
+insert into cus_phone values(3,2348962173,3);
+insert into cus_phone values(4,4563289346,4);
+insert into cus_phone values(5,5326974123,5);
+insert into cus_phone values(6,7896523145,6);
+insert into cus_phone values(7,4562913087,7);
+insert into cus_phone values(8,3289654103,8);
+
+
+16.com_phone
+create table com_phone(co_pid int primary key,number varchar(20) not null unique,coid int not null,foreign key(coid) references company(coid));
+insert into com_phone values(1,04067486677,1);
+insert into com_phone values(2,03345666622,2);
+insert into com_phone values(3,05122303477,3);
+insert into com_phone values(4,9845418226,4);
+insert into com_phone values(5,08916667777,5);
+insert into com_phone values(6,022613334444,6);
+insert into com_phone values(7,04428113030,7);
+insert into com_phone values(8,03340064220,8);
+
+17.supp_phone
+create table supp_phone(s_pid int primary key,number varchar(20) not null unique,supplierid int not null,foreign key(supplierid) references suppliers(supplierid));
+insert into supp_phone values(1,9654123007,1);
+insert into supp_phone values(2,9654123008,2);
+insert into supp_phone values(3,9654123009,3);
+insert into supp_phone values(4,9654123010,4);
+insert into supp_phone values(5,9654123027,5);
+insert into supp_phone values(6,9654123017,6);
+
+
+18.verifies table-
+create table verifies(verid int primary key,aid int not null,foreign key(aid) references jewelry(jid),bid int not null, foreign key(bid) references bill(bid));
+insert into verifies values(1,1,1);
+insert into verifies values(2,1,2);
+insert into verifies values(3,1,3);
+insert into verifies values(4,1,4);
+insert into verifies values(5,1,5);
+insert into verifies values(6,1,6);
+insert into verifies values(7,1,7);
+insert into verifies values(8,1,8);
+insert into verifies values(9,1,9);
+insert into verifies values(10,1,10);
+insert into verifies values(11,1,11);
+insert into verifies values(12,1,12);
+insert into verifies values(13,1,13);
+insert into verifies values(14,1,14);
+insert into verifies values(15,1,15);
+insert into verifies values(16,1,16);
+insert into verifies values(17,1,17);
+insert into verifies values(18,1,18);
+insert into verifies values(19,1,19);
+insert into verifies values(20,1,20);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
